@@ -1,1 +1,24 @@
-<p>parcel-lockers works!</p>
+<h1 class="mt-4 mb-3">Paštomatai</h1>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th class="text-center align-middle">Paštomato kodas</th>
+      <th class="text-center align-middle">Talpa (siuntų skaičius)</th>
+      <th class="text-center align-middle">Miestas</th>
+      <th class="text-center align-middle"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let locker of parcelLockers">
+      <td class="align-middle">{{ locker.code }}</td>
+      <td class="text-center align-middle">{{ locker.maxParcelsCount }}</td>
+      <td class="text-center align-middle">{{ locker.town }}</td>
+      <td class="text-center align-middle">
+        <button (click)="editParcelLocker(locker.id)" class="btn btn-warning btn-sm m-1">Koreguoti</button>
+        <button (click)="deleteParcelLocker(locker.id)" class="btn btn-danger btn-sm m-1">Trinti</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+

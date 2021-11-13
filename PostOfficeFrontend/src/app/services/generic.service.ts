@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ export class GenericService<T> {
 
   constructor(
     protected http: HttpClient,
-    protected url: string
+    @Inject(String) protected url: string
   ) { }
 
   getAll(): Observable<T[]> {
