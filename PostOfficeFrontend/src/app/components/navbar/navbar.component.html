@@ -1,0 +1,19 @@
+<nav class="navbar sticky-top navbar-dark bg-dark">
+  <div class="container-lg">
+    <div class="navbar-nav d-flex flex-row">
+      <div
+        routerLinkActive="current"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="px-3 py-2"
+        >
+        <a class="nav-link" routerLink="">Pagrindinis puslapis</a>
+      </div>
+      <div routerLinkActive="current" class="px-3 py-2">
+        <a class="nav-link" routerLink="/parcels">Siuntos</a>
+      </div>
+      <div routerLinkActive="current" class="px-3 py-2">
+        <a class="nav-link" routerLink="/parcel-lockers">Paštomatai</a>
+      </div>
+    </div>
+  </div>
+</nav>
