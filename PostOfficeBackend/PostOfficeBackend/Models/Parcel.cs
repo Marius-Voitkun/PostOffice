@@ -1,4 +1,6 @@
-﻿namespace PostOfficeBackend.Models
+﻿using System.Text.Json.Serialization;
+
+namespace PostOfficeBackend.Models
 {
     public class Parcel
     {
@@ -14,6 +16,7 @@
 
         public int? ParcelLockerId { get; set; }
 
+        [JsonIgnore]
         public ParcelLocker ParcelLocker { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PostOfficeBackend.DAL;
+using PostOfficeBackend.Services;
 
 namespace PostOfficeBackend
 {
@@ -31,6 +32,9 @@ namespace PostOfficeBackend
             services.AddDbContext<DataContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Default")));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<ParcelsService>();
+            services.AddTransient<ParcelLockersService>();
 
             services.AddControllers();
 
