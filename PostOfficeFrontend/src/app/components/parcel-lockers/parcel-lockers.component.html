@@ -22,3 +22,89 @@
   </tbody>
 </table>
 
+<div class="mt-5 mb-3">
+  <div *ngIf="editMode; then edit else add"></div>
+  <ng-template #edit>
+    <h4>Koreguoti paštomato duomenis</h4>
+  </ng-template>
+  <ng-template #add>
+    <h4>Pridėti naują paštomatą</h4>
+  </ng-template>
+</div>
+
+<form #parcelLockerForm="ngForm" class="mb-4">
+  <input [(ngModel)]="id" name="id" type="hidden">
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="code" class="form-label">Paštomato kodas</label>
+      <input
+        type="text"
+        [(ngModel)]="code"
+        #codeField="ngModel"
+        name="code"
+        id="code"
+        class="form-control"
+        required
+        maxlength="20"
+      >
+    </div>
+    <div class="col-sm-3">
+      <label for="maxParcelsCount" class="form-label text-nowrap">Talpa (siuntų skaičius)</label>
+      <input
+        type="number"
+        [(ngModel)]="maxParcelsCount"
+        #maxParcelsCountField="ngModel"
+        name="maxParcelsCount"
+        id="maxParcelsCount"
+        class="form-control"
+        required
+        min="1"
+        max="32767"
+      >
+    </div>
+    <div class="col-sm-6">
+      <label for="town" class="form-label">Miestas</label>
+      <input
+        type="text"
+        [(ngModel)]="town"
+        #townField="ngModel"
+        name="town"
+        id="town"
+        class="form-control"
+        required
+        maxlength="55"
+      >
+    </div>
+  </div>
+
+  <div class="my-3">
+    <button
+      type="button"
+      *ngIf="!editMode"
+      (click)="addParcelLocker(parcelLockerForm.value);
+        parcelLockerForm.resetForm({ id: 0, maxParcelsCount: 0 })"
+      class="btn btn-primary mx-1"
+      [disabled]="parcelLockerForm.invalid"
+      >
+      Pridėti
+    </button>
+    <button
+      type="button"
+      *ngIf="editMode"
+      (click)="saveChanges(parcelLockerForm.value);
+        parcelLockerForm.resetForm({ id: 0, maxParcelsCount: 0 })"
+      class="btn btn-warning mx-1"
+      [disabled]="parcelLockerForm.invalid"
+      >
+      Išsaugoti
+    </button>
+    <button
+      type="button"
+      (click)="editMode = false;
+        parcelLockerForm.resetForm({ id: 0, maxParcelsCount: 0 })"
+      class="btn btn-secondary mx-1"
+      >
+      Atšaukti
+    </button>
+  </div>
+</form>
