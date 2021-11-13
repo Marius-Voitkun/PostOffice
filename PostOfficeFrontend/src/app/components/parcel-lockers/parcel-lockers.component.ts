@@ -83,10 +83,10 @@ export class ParcelLockersComponent implements OnInit {
 
   private sortParcelLockersByCode(): void {
     this.parcelLockers.sort((a, b) => {
-      const nameA = a.code.toLowerCase();
-      const nameB = b.code.toLowerCase();
+      const codeA = a.code.toLowerCase();
+      const codeB = b.code.toLowerCase();
 
-      return nameA.localeCompare(nameB);
+      return codeA.localeCompare(codeB);
     });
   }
 }

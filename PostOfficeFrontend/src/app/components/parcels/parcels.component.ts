@@ -36,12 +36,20 @@ export class ParcelsComponent implements OnInit {
 
   async getParcelLockers(): Promise<void> {
     this.parcelLockers = await this.parcelLockersService.getAll().toPromise();
+    this.parcelLockers.sort((a, b) => {
+      const townA = a.town.toLowerCase();
+      const townB = b.town.toLowerCase();
+
+      return townA.localeCompare(townB);
+    });
   }
 
   getParcels(): void {
     this.parcelsService.getAll(this.parcelLockerIdForFiltering).subscribe(
       parcels => {
-        parcels.forEach(p => this.assignParcelLockerData(p));
+        parcels.forEach(p =>
+          p.parcelLocker = this.assignParcelLockerData(p.parcelLockerId)
+        );
         this.parcels = parcels;
       },
       error => {
@@ -53,7 +61,7 @@ export class ParcelsComponent implements OnInit {
   addParcel(parcel: Parcel): void {
     this.parcelsService.add(parcel).subscribe(
       parcelFromApi => {
-        this.assignParcelLockerData(parcelFromApi);
+        parcelFromApi.parcelLocker = this.assignParcelLockerData(parcelFromApi.parcelLockerId);
         this.parcels.push(parcelFromApi);
         this.sortParcelsByWeightDesc();
       },
@@ -79,7 +87,7 @@ export class ParcelsComponent implements OnInit {
   saveChanges(parcel: Parcel): void {
     this.parcelsService.update(parcel.id, parcel).subscribe(
       () => {
-        this.assignParcelLockerData(parcel);
+        parcel.parcelLocker = this.assignParcelLockerData(parcel.parcelLockerId);
         
         const index = this.parcels.map(p => p.id).indexOf(parcel.id);
         this.parcels[index] = parcel;
@@ -106,15 +114,12 @@ export class ParcelsComponent implements OnInit {
     );
   }
 
-  private assignParcelLockerData(parcel: Parcel): void {
-    if (parcel.parcelLockerId === null) {
-      parcel.parcelLocker = '–';
-      return;
-    }
+  private assignParcelLockerData(parcelLockerId: number | null): string {
+    if (parcelLockerId === null)
+      return '–';
 
-    const parcelLocker = this.parcelLockers.filter(pl => pl.id === parcel.parcelLockerId)[0];
-
-    parcel.parcelLocker = `${parcelLocker.town} (${parcelLocker.code})`;
+    const parcelLocker = this.parcelLockers.filter(pl => pl.id == parcelLockerId)[0];
+    return `${parcelLocker.town} (${parcelLocker.code})`;
   }
 
   private sortParcelsByWeightDesc() {

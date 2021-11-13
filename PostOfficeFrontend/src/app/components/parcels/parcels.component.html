@@ -73,6 +73,14 @@
         required
         maxlength="55"
       >
+      <div 
+        *ngIf="receiverNameField.touched && receiverNameField.invalid" 
+        class="val-error mb-2"
+      >
+        <div *ngIf="receiverNameField.errors?.required">
+          Laukas negali būti tuščias.
+        </div>
+      </div>
     </div>
     <div class="col-lg-3 col-sm-4">
       <label for="receiverPhone" class="form-label">Gavėjo tel. nr.</label>
@@ -87,6 +95,17 @@
         minlength="12"
         maxlength="12"
       >
+      <div 
+        *ngIf="receiverPhoneField.touched && receiverPhoneField.invalid" 
+        class="val-error mb-2"
+      >
+        <div *ngIf="receiverPhoneField.errors?.required">
+          Laukas negali būti tuščias.
+        </div>
+        <div *ngIf="receiverPhoneField.errors?.minlength || receiverPhoneField.errors?.maxlength">
+          Neteisingas telefono numeris.
+        </div>
+      </div>
     </div>
     <div class="col-lg-2 col-md-5 col-sm-4">
       <label for="weightInKg" class="form-label">Svoris, kg</label>
@@ -102,6 +121,20 @@
         min="0.001"
         max="999.999"
       >
+      <div 
+        *ngIf="weightField.touched && weightField.invalid" 
+        class="val-error mb-2"
+      >
+        <div *ngIf="weightField.errors?.required">
+          Laukas negali būti tuščias.
+        </div>
+        <div *ngIf="weightField.errors?.min">
+          Svoris negali būti mažesnis negu 0.001 kg.
+        </div>
+        <div *ngIf="weightField.errors?.max">
+          Per didelis svoris.
+        </div>
+      </div>
     </div>
     <div class="col-lg-3 col-md-7 col-sm-8">
       <label for="parcelLockerId" class="form-label">Paštomatas</label>

@@ -47,6 +47,14 @@
         required
         maxlength="20"
       >
+      <div 
+        *ngIf="codeField.touched && codeField.invalid" 
+        class="val-error mb-2"
+      >
+        <div *ngIf="codeField.errors?.required">
+          Laukas negali būti tuščias.
+        </div>
+      </div>
     </div>
     <div class="col-sm-3">
       <label for="maxParcelsCount" class="form-label text-nowrap">Talpa (siuntų skaičius)</label>
@@ -61,6 +69,20 @@
         min="1"
         max="32767"
       >
+      <div 
+        *ngIf="maxParcelsCountField.touched && maxParcelsCountField.invalid" 
+        class="val-error mb-2"
+      >
+        <div *ngIf="maxParcelsCountField.errors?.required">
+          Laukas negali būti tuščias.
+        </div>
+        <div *ngIf="maxParcelsCountField.errors?.min">
+          Skaičius negali būti mažesnis negu 1.
+        </div>
+        <div *ngIf="maxParcelsCountField.errors?.max">
+          Skaičius negali būti didesnis negu 32767.
+        </div>
+      </div>
     </div>
     <div class="col-sm-6">
       <label for="town" class="form-label">Miestas</label>
@@ -74,6 +96,14 @@
         required
         maxlength="55"
       >
+      <div 
+        *ngIf="townField.touched && townField.invalid" 
+        class="val-error mb-2"
+      >
+        <div *ngIf="townField.errors?.required">
+          Laukas negali būti tuščias.
+        </div>
+      </div>
     </div>
   </div>
 
