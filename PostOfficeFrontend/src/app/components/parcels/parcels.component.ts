@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Parcel } from 'src/app/models/parcel';
+import { ParcelLocker } from 'src/app/models/parcel-locker';
+import { ParcelLockersService } from 'src/app/services/parcel-lockers.service';
 import { ParcelsService } from 'src/app/services/parcels.service';
 
 @Component({
@@ -10,6 +12,8 @@ import { ParcelsService } from 'src/app/services/parcels.service';
 export class ParcelsComponent implements OnInit {
 
   parcels: Parcel[] = [];
+  parcelLockers: ParcelLocker[] = [];
+  parcelLockerIdForFiltering: number | null = null;
 
   id: number = 0;
   receiverName: string = '';
@@ -20,11 +24,24 @@ export class ParcelsComponent implements OnInit {
 
   editMode: boolean = false;
 
-  constructor(private parcelsService: ParcelsService) { }
+  constructor(
+    private parcelsService: ParcelsService,
+    private parcelLockersService: ParcelLockersService
+    ) { }
 
-  ngOnInit(): void {
-    this.parcelsService.getAll().subscribe(
+  async ngOnInit(): Promise<void> {
+    await this.getParcelLockers();
+    this.getParcels();
+  }
+
+  async getParcelLockers(): Promise<void> {
+    this.parcelLockers = await this.parcelLockersService.getAll().toPromise();
+  }
+
+  getParcels(): void {
+    this.parcelsService.getAll(this.parcelLockerIdForFiltering).subscribe(
       parcels => {
+        parcels.forEach(p => this.assignParcelLockerData(p));
         this.parcels = parcels;
       },
       error => {
@@ -36,6 +53,7 @@ export class ParcelsComponent implements OnInit {
   addParcel(parcel: Parcel): void {
     this.parcelsService.add(parcel).subscribe(
       parcelFromApi => {
+        this.assignParcelLockerData(parcelFromApi);
         this.parcels.push(parcelFromApi);
         this.sortParcelsByWeightDesc();
       },
@@ -61,8 +79,11 @@ export class ParcelsComponent implements OnInit {
   saveChanges(parcel: Parcel): void {
     this.parcelsService.update(parcel.id, parcel).subscribe(
       () => {
+        this.assignParcelLockerData(parcel);
+        
         const index = this.parcels.map(p => p.id).indexOf(parcel.id);
         this.parcels[index] = parcel;
+        
         this.sortParcelsByWeightDesc();
 
         this.editMode = false;
@@ -83,6 +104,17 @@ export class ParcelsComponent implements OnInit {
         alert('Nepavyko ištrinti siuntinio.');
       }
     );
+  }
+
+  private assignParcelLockerData(parcel: Parcel): void {
+    if (parcel.parcelLockerId === null) {
+      parcel.parcelLocker = '–';
+      return;
+    }
+
+    const parcelLocker = this.parcelLockers.filter(pl => pl.id === parcel.parcelLockerId)[0];
+
+    parcel.parcelLocker = `${parcelLocker.town} (${parcelLocker.code})`;
   }
 
   private sortParcelsByWeightDesc() {

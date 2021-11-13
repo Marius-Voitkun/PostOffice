@@ -48,7 +48,7 @@ export class GenericService<T> {
       );
   }
 
-  private handleError(error: HttpErrorResponse) {
+  protected handleError(error: HttpErrorResponse) {
     console.log(error);
     return throwError('Error: ' + error.message);
   }

@@ -5,4 +5,5 @@ export interface Parcel {
   weightInKg: number;
   info: string;
   parcelLockerId: number | null;
+  parcelLocker?: string;
 }

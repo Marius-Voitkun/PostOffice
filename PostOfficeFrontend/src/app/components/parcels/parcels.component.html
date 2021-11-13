@@ -1,1 +1,163 @@
-<p>parcels works!</p>
+<h1 class="mt-4 mb-3">Siuntos</h1>
+
+<div class="row mb-3">
+  <label for="parcelsFilter" class="col-auto col-form-label">Filtruoti siuntas pagal pasirinktą paštomatą:</label>
+  <div class="col-auto">
+    <div class="row">
+      <div class="col-auto">
+        <select
+          [(ngModel)]="parcelLockerIdForFiltering"
+          name="parcelsFilter"
+          id="parcelsFilter"
+          class="form-select"
+        >
+          <option [ngValue]="null">&lt;Pasirinkite&gt;</option>
+          <option *ngFor="let locker of parcelLockers" [value]="locker.id">
+            {{ locker.town }} ({{ locker.code }})
+          </option>
+        </select>
+      </div>
+      <button (click)="getParcels()" type="button" class="btn btn-primary col-auto">Filtruoti</button>
+    </div>
+  </div>
+</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th class="text-center align-middle">Gavėjas</th>
+      <th class="text-center align-middle">Gavėjo tel. nr.</th>
+      <th class="text-center align-middle">Svoris, kg</th>
+      <th class="text-center align-middle">Paštomatas</th>
+      <th class="text-center align-middle">Papildoma informacija</th>
+      <th class="text-center align-middle"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let parcel of parcels">
+      <td class="align-middle">{{ parcel.receiverName }}</td>
+      <td class="text-center align-middle">{{ parcel.receiverPhone }}</td>
+      <td class="text-center align-middle">{{ parcel.weightInKg | number:'1.3-3' }}</td>
+      <td class="text-center align-middle">{{ parcel.parcelLocker }}</td>
+      <td class="text-center align-middle">{{ parcel.info }}</td>
+      <td class="text-center align-middle">
+        <button (click)="editParcel(parcel.id)" class="btn btn-warning btn-sm m-1">Koreguoti</button>
+        <button (click)="deleteParcel(parcel.id)" class="btn btn-danger btn-sm m-1">Trinti</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="mt-5 mb-3">
+  <div *ngIf="editMode; then edit else add"></div>
+  <ng-template #edit>
+    <h4>Koreguoti siuntinio duomenis</h4>
+  </ng-template>
+  <ng-template #add>
+    <h4>Pridėti naują siuntinį</h4>
+  </ng-template>
+</div>
+
+<form #parcelForm="ngForm" class="mb-4">
+  <input [(ngModel)]="id" name="id" type="hidden">
+  <div class="row">
+    <div class="col-lg-4 col-sm-8">
+      <label for="receiverName" class="form-label">Gavėjo vardas ir pavardė</label>
+      <input
+        type="text"
+        [(ngModel)]="receiverName"
+        #receiverNameField="ngModel"
+        name="receiverName"
+        id="receiverName"
+        class="form-control"
+        required
+        maxlength="55"
+      >
+    </div>
+    <div class="col-lg-3 col-sm-4">
+      <label for="receiverPhone" class="form-label">Gavėjo tel. nr.</label>
+      <input
+        type="text"
+        [(ngModel)]="receiverPhone"
+        #receiverPhoneField="ngModel"
+        name="receiverPhone"
+        id="receiverPhone"
+        class="form-control"
+        required
+        minlength="12"
+        maxlength="12"
+      >
+    </div>
+    <div class="col-lg-2 col-md-5 col-sm-4">
+      <label for="weightInKg" class="form-label">Svoris, kg</label>
+      <input
+        type="number"
+        step="0.001"
+        [(ngModel)]="weightInKg"
+        #weightField="ngModel"
+        name="weightInKg"
+        id="weightInKg"
+        class="form-control"
+        required
+        min="0.001"
+        max="999.999"
+      >
+    </div>
+    <div class="col-lg-3 col-md-7 col-sm-8">
+      <label for="parcelLockerId" class="form-label">Paštomatas</label>
+      <select
+        [(ngModel)]="parcelLockerId"
+        #parcelLockerIdField="ngModel"
+        name="parcelLockerId"
+        id="parcelLockerId"
+        class="form-select"
+      >
+        <option [ngValue]="null">&lt;Pasirinkite&gt;</option>
+        <option *ngFor="let locker of parcelLockers" [value]="locker.id">
+          {{ locker.town }} ({{ locker.code }})
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="my-3">
+    <label for="info" class="form-label">Papildoma informacija</label>
+    <textarea
+      [(ngModel)]="info"
+      name="info"
+      id="info"
+      rows="3"
+      class="form-control"
+    ></textarea>
+  </div>
+
+  <div class="my-3">
+    <button
+      type="button"
+      *ngIf="!editMode"
+      (click)="addParcel(parcelForm.value);
+        parcelForm.resetForm({ id: 0, weightInKg: 0 })"
+      class="btn btn-primary mx-1"
+      [disabled]="parcelForm.invalid"
+    >
+      Pridėti
+    </button>
+    <button
+      type="button"
+      *ngIf="editMode"
+      (click)="saveChanges(parcelForm.value);
+        parcelForm.resetForm({ id: 0, weightInKg: 0 })"
+      class="btn btn-warning mx-1"
+      [disabled]="parcelForm.invalid"
+    >
+      Išsaugoti
+    </button>
+    <button
+      type="button"
+      (click)="editMode = false;
+        parcelForm.resetForm({ id: 0, weightInKg: 0 })"
+      class="btn btn-secondary mx-1"
+    >
+      Atšaukti
+    </button>
+  </div>
+</form>
